@@ -3,8 +3,18 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 
-main_class = uic.loadUiType("main.ui")[0]
-screen2_class = uic.loadUiType("test.ui")[0]
+#리소스 파일 사용시 resource_path()사용해서 절대경로로 변경
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+main_class = uic.loadUiType(resource_path("main.ui"))[0]
+screen2_class = uic.loadUiType(resource_path("test.ui"))[0]
 
 
 class MyWindow(QMainWindow, main_class):
