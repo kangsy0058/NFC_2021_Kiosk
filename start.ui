@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>440</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>440</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>800</width>
+    <height>440</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>1</x>
+      <y>0</y>
+      <width>799</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>800</width>
+      <height>50</height>
+     </size>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:24pt; font-weight:600;&quot;&gt;체온 측정 초기 설정&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>190</y>
+      <width>521</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0">
+     <property name="verticalSpacing">
+      <number>10</number>
+     </property>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="start_btn">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>직접 입력</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="start_qr_btn">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>QR</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
