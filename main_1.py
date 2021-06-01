@@ -1,11 +1,16 @@
 import sys
 import os
 import wifi
+import cv2
+import pyzbar.pyzbar as pyzbar
+
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+
+cap = cv2.VideoCapture(0)
 
 def resource_path(relative_path):
     try:
@@ -19,8 +24,56 @@ def resource_path(relative_path):
 main_class = uic.loadUiType(resource_path("main.ui"))[0]
 screen2_class = uic.loadUiType(resource_path("test.ui"))[0]
 wifi_class = uic.loadUiType(resource_path("wifi.ui"))[0]
+set_class = uic.loadUiType(resource_path("set.ui"))[0]
+qrvideo_class = uic.loadUiType(resource_path("qr_video.ui"))[0]
 
 wifi_list=["와이파이1","와이파이2","와이파이3"]
+qr_data = ''
+
+class setWindow(QMainWindow, set_class):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.setWindowTitle("Hoseo Unviersity - IR LAB")
+
+        self.def_btn.clicked.connect(self.next_Window)
+        self.qrcode_btn.clicked.connect(self.qrvideo_Window)
+
+    def next_Window(self):
+        widget.setCurrentIndex(widget.currentIndex()+1)
+    def qrvideo_Window(self):
+        global qr_data
+        while cap.isOpened():
+            success, frame=cap.read()
+            if success:
+                for code in pyzbar.decode(frame):
+                    qr_data = code.data.decode('utf-8')
+                cv2.namedWindow('QR Code 인식', cv2.WINDOW_NORMAL)             
+                cv2.imshow('QR Code 인식', frame)
+                key=cv2.waitKey(1)&0xff
+                if qr_data != '':
+                    self.label.setText(qr_data)
+                    break
+            
+        cap.release()  
+        cv2.destroyAllWindows()
+        widget.setCurrentIndex(widget.currentIndex()+4)
+
+class qr_videoWindow(QMainWindow, qrvideo_class):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.setWindowTitle("Hoseo Unviersity - IR LAB") 
+        self.qr_date_set()       
+    
+    def qr_date_set(self):
+        print(qr_data)
+        self.qr_label.setText(qr_data)
+
+    
+
+
+
 
 class MyWindow(QMainWindow, main_class):
     def __init__(self):
@@ -109,11 +162,15 @@ if __name__ == "__main__":
     widget= QtWidgets.QStackedWidget() # Qtwidgets모듈의 Qstackedwidget클래스 
     wifi=wifi()
     mainwindow = MyWindow()
+    setwindow = setWindow()
     screen2 = Screen2()
+    qrVideo = qr_videoWindow()
+    widget.addWidget(setwindow)
     widget.addWidget(wifi)
     widget.addWidget(mainwindow) # 위젯 추가 > mainwindow창
     widget.addWidget(screen2) # 위젯 추가  > screen창
-    widget.setFixedHeight(400) # 사이즈 조절
+    widget.addWidget(qrVideo)
+    widget.setFixedHeight(480) # 사이즈 조절
     widget.setFixedWidth(800)
     widget.show() #화면에 보여지도록
 

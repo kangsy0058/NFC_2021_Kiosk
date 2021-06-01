@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>400</height>
+    <height>480</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>800</width>
-    <height>400</height>
+    <height>480</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>800</width>
-    <height>400</height>
+    <height>480</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -49,7 +49,7 @@
     </property>
     <property name="font">
      <font>
-      <family>YDIYGO360</family>
+      <family>Apple SD Gothic Neo</family>
       <pointsize>24</pointsize>
      </font>
     </property>
@@ -493,7 +493,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>100</x>
