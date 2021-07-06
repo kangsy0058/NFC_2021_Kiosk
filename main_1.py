@@ -22,9 +22,6 @@ def resource_path(relative_path):
 
 
 main_class = uic.loadUiType(resource_path("main.ui"))[0]
-screen2_class = uic.loadUiType(resource_path("test.ui"))[0]
-wifi_class = uic.loadUiType(resource_path("wifi.ui"))[0]
-set_class = uic.loadUiType(resource_path("set.ui"))[0]
 qrvideo_class = uic.loadUiType(resource_path("qr_video.ui"))[0]
 
 wifi_list=["와이파이1","와이파이2","와이파이3"]
@@ -160,13 +157,9 @@ class wifi(QMainWindow, wifi_class):
 if __name__ == "__main__":
     app = QApplication(sys.argv) # 프로그램 실행
     widget= QtWidgets.QStackedWidget() # Qtwidgets모듈의 Qstackedwidget클래스 
-    wifi=wifi()
     mainwindow = MyWindow()
-    setwindow = setWindow()
-    screen2 = Screen2()
     qrVideo = qr_videoWindow()
     widget.addWidget(setwindow)
-    widget.addWidget(wifi)
     widget.addWidget(mainwindow) # 위젯 추가 > mainwindow창
     widget.addWidget(screen2) # 위젯 추가  > screen창
     widget.addWidget(qrVideo)

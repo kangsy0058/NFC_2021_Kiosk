@@ -18,24 +18,30 @@ def resource_path(relative_path):
 
 Qrtest_class = uic.loadUiType(resource_path("camtest.ui"))[0]
 
-cap = cv2.VideoCapture(0)  
+cap = cv2.VideoCapture(0)
+cap.set(3,320)
+cap.set(4,240)
 class Ex(QMainWindow,Qrtest_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-       
-#print(data_list)
+
+        my_code = None
+
         while cap.isOpened():
             success, frame=cap.read()
             
             if success:
                 for code in pyzbar.decode(frame):
                     my_code =code.data.decode('utf-8')
+                    print(my_code)
                     self.label_2.setText(my_code)                 
                 cv2.imshow('Camera Window', frame)
                 
                 key=cv2.waitKey(1)&0xff
                 if(key==27):
+                    break
+                if my_code is not None:
                     break
             
         cap.release()  

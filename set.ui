@@ -122,31 +122,9 @@
           </font>
          </property>
          <property name="text">
-          <string>QR_Code 세팅</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="def_btn">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>100</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>200</width>
-           <height>100</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>기본 세팅</string>
+          <string>무선랜 연결
+연결 시작
+(QR Code)</string>
          </property>
         </widget>
        </item>
@@ -168,22 +146,7 @@
           <enum>QFrame::Box</enum>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;QR Code 세팅은&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;관리자 App이 필요합니다.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="font">
-          <font>
-           <pointsize>18</pointsize>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::Box</enum>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;기본 세팅은&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;키보드 연결이 필요합니다.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;WiFi 연결시 WiFi QR Code가 필요합니다.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;자세한 내용은 www.****.com 방문해주세요.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
