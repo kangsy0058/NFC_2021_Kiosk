@@ -2,6 +2,7 @@ import sys
 import os
 
 import qrcode_wifi
+import Py_Json.to_json as tj
 
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
@@ -31,7 +32,8 @@ class MyWindow(QMainWindow, set_class):
     
     def btn_connect(self):
         wificode = qrcode_wifi.start()
-        print(wificode)
+        if wificode is not None:
+            tj.to_j(wificode)
 
 class Set_Window(QMainWindow, Qrtest_class):
     def __init__(self):
