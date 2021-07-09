@@ -5,22 +5,27 @@ import os
 def result(wificode): # 매개변수 ssid, group_code
     print("qr_result에서 출력"+wificode)
     print(type(wificode))
+    a= wificode.split(sep=';')
+    del a[2:]
     
-    s_index= wificode.find('"SSID')
-    p_index= wificode.find('"PW')
+    print(a)
+    '''
+    s_index= wificode.find('S')
+    p_index= wificode.find('')
 
     print(s_index)
     print(p_index)
    
     r=wificode[s_index:p_index-1] 
     '''
+    '''
     변수로 받을 경우
     qr_add="SSID:{0}\nGroup code:{1}.format(ssid, group_code)"
     return qr_add    
     '''
-    print(r)
     
-    return r
+    
+    return a
 '''     ***리눅스에서 돌리면 주석 제거하기***
 # wpa_supplicant.conf파일 수정하는 함수
 def CreateWifiConfig(SSID, password):
