@@ -7,7 +7,6 @@ from PyQt5.QtCore import *
 from PyQt5 import uic
 
 version_class = uic.loadUiType("ver_check\Ver_check.ui")[0]
-
 class ver(QMainWindow, version_class):
     def __init__(self): #ui구현 
         super().__init__()

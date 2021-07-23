@@ -68,7 +68,7 @@ class Set_Window(QMainWindow, Qrtest_class):    # camtest.ui *qr내용 출력됨
 class ver_window(version.ver): #버전 검사하는 클래스 
     def __init__(self): #여기에서 
         super(ver_window, self).__init__()
-        version.ver.loading(self)#여기 self도 ver_window 인스턴스인가?
+        version.ver.loading(self)
         
         
         

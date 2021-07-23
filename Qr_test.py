@@ -8,15 +8,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-def resource_path(relative_path):
-    try:
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)   
-
-Qrtest_class = uic.loadUiType(resource_path("Qr_test.ui"))[0]
+Qrtest_class = uic.loadUiType("Qr_test.ui")[0]
 
 cap = cv2.VideoCapture(0)
 cap.set(3,320)
