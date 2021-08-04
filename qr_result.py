@@ -26,7 +26,7 @@ def result(wificode): # 매개변수 ssid, group_code
     
     
     return a
-'''     ***리눅스에서 돌리면 주석 제거하기***
+    #***리눅스에서 돌리면 주석 제거하기***
 # wpa_supplicant.conf파일 수정하는 함수
 def CreateWifiConfig(SSID, password):
     config_lines = [
@@ -46,9 +46,9 @@ def CreateWifiConfig(SSID, password):
     print("Wifi config added")
     os.system("sudo reboot now") # 재부팅하는 코드
  
-CreateWifiConfig("Ubiquitous_420", "1234567890") #테스트 코드
+#CreateWifiConfig("Ubiquitous_420", "1234567890") #테스트 코드
 
-'''   
+  
 #테스트 파일 
 def test():
-    print('test 연결 완료')
+    print('test 연결 완료 | 재부팅 테스트 시 main,  qr_result문서에서 주석 표시 지우기')
