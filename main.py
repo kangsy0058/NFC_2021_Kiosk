@@ -15,8 +15,8 @@ from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPixmap
 #리소스 파일 사용시 resource_path()사용해서 절대경로로 변경
 
-set_class = uic.loadUiType('set.ui')[0]
-Qrtest_class = uic.loadUiType("camtest.ui")[0]
+set_class = uic.loadUiType('/home/pi/nfc_2021_kiosk/set.ui')[0]
+Qrtest_class = uic.loadUiType("/home/pi/nfc_2021_kiosk/camtest.ui")[0]
 #persom_img_class= uic.loadUiType("C:\\Users\\졸비쨔응\\Documents\\nfc_2021_kiosk\\nfc.ui")[0]
 
 wificode ='' # qr 내용 저장할 변수
@@ -107,6 +107,6 @@ if __name__ == "__main__":
         
     widget.setFixedHeight(480)  
     widget.setFixedWidth(800)  
-    widget.show()
+    widget.showFullScreen()
     app.exec_()
     
