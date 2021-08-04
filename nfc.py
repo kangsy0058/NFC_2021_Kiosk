@@ -13,7 +13,7 @@ from PyQt5 import QtGui
 # 2. 1번 객체에 이미지 불러옴
 # 3. 레이블에 객체를 불러오기
 
-persom_img_class= uic.loadUiType("C:\\Users\\졸비쨔응\\Documents\\nfc_2021_kiosk\\nfc.ui")[0] #라즈베리파이에 테스트 시 절대 경로로 변경하기!
+persom_img_class= uic.loadUiType("/home/pi/nfc_2021_kiosk/nfc.ui")[0] #라즈베리파이에 테스트 시 절대 경로로 변경하기!
 
 class nfc(QMainWindow, persom_img_class):
     def __init__(self):
@@ -49,7 +49,3 @@ class nfc(QMainWindow, persom_img_class):
     def ver_serch(self): # 버전 검사 메소드
         pass
     
-
-
-
-  
