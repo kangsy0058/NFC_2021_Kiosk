@@ -26,61 +26,6 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="top_label">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>800</width>
-      <height>50</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>800</width>
-      <height>50</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>800</width>
-      <height>50</height>
-     </size>
-    </property>
-    <property name="font">
-     <font>
-      <family>Apple SD Gothic Neo</family>
-      <pointsize>24</pointsize>
-     </font>
-    </property>
-    <property name="acceptDrops">
-     <bool>false</bool>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::NoFrame</enum>
-    </property>
-    <property name="text">
-     <string>QR Code Setting - Hoseo IR LAB</string>
-    </property>
-    <property name="scaledContents">
-     <bool>false</bool>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-    <property name="wordWrap">
-     <bool>false</bool>
-    </property>
-    <property name="openExternalLinks">
-     <bool>false</bool>
-    </property>
-    <property name="textInteractionFlags">
-     <set>Qt::LinksAccessibleByMouse</set>
-    </property>
-   </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
@@ -102,7 +47,7 @@
           </font>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:24pt; font-weight:600;&quot;&gt;qr_label&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:24pt; font-weight:600; color:#ffffff;&quot;&gt;qr_label&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -125,7 +70,7 @@
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#ff0004;&quot;&gt;일치하는지 확인하세요&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; color:#ff0004;&quot;&gt;일치하는지 확인하세요&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -138,11 +83,14 @@
          <property name="minimumSize">
           <size>
            <width>200</width>
-           <height>50</height>
+           <height>100</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">background-image: url(:/back/img/[IR]NFC_KIOSK_Yes_btn.png);</string>
+         </property>
          <property name="text">
-          <string>확인</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -164,11 +112,14 @@
          <property name="minimumSize">
           <size>
            <width>200</width>
-           <height>50</height>
+           <height>100</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">background-image: url(:/back/img/[IR]NFC_KIOSK_No_btn.png);</string>
+         </property>
          <property name="text">
-          <string>취소</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -176,8 +127,31 @@
      </item>
     </layout>
    </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>800</width>
+      <height>480</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(:/back/img/[IR]NFC_KIOSK_Wifi.png);</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <zorder>frame</zorder>
+   <zorder>layoutWidget</zorder>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="img.qrc"/>
+ </resources>
  <connections/>
 </ui>

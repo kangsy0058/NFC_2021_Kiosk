@@ -1,5 +1,10 @@
 <RCC>
   <qresource prefix="back">
+    <file>img/[IR]NFC_KIOSK_No_btn.png</file>
+    <file>img/[IR]NFC_KIOSK_Yes_btn.png</file>
+    <file>img/[IR]NFC_KIOSK_Wifi.png</file>
+    <file>img/[IR]NFC_KIOSK_Reboot_Btn.png</file>
+    <file>img/[IR]NFC_KIOSK_Power_Btn.png</file>
     <file>img/WiFi_Btn.png</file>
     <file>img/[IR]NFC_KIOSK_one.png</file>
   </qresource>
