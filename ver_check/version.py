@@ -6,11 +6,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import uic
 
-version_class = uic.loadUiType("ver_check\Ver_check.ui")[0]
+version_class = uic.loadUiType("ver_check\Ver_check.ui")[0] # 라즈베리파이에 테스트 시 절대경로로 변경!!
 class ver(QMainWindow, version_class):
     def __init__(self): #ui구현 
         super().__init__()
-        self.setupUi(self) #여기서 self= 
+        self.setupUi(self) #여기서 self=>main.py에서 만든 객체? 
           
     def loading(self): #로딩 ui 구현 함수
         #self.center() #위치 설정      

@@ -3,10 +3,10 @@ import os
 
 import qrcode_wifi
 import qr_result
+from nfc import nfc
+
 
 from ver_check import version
-
-
 
 import pywifi
 from pywifi import *
@@ -14,11 +14,12 @@ from pywifi import *
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5 import QtWidgets
-
+from PyQt5.QtGui import QPixmap
 #리소스 파일 사용시 resource_path()사용해서 절대경로로 변경
 
 set_class = uic.loadUiType('set.ui')[0]
 Qrtest_class = uic.loadUiType("camtest.ui")[0]
+#persom_img_class= uic.loadUiType("C:\\Users\\졸비쨔응\\Documents\\nfc_2021_kiosk\\nfc.ui")[0]
 
 wificode ='' # qr 내용 저장할 변수
 class MyWindow(QMainWindow, set_class): #set.ui *첫 화면     
@@ -68,11 +69,20 @@ class Set_Window(QMainWindow, Qrtest_class):    # camtest.ui *qr내용 출력됨
 class ver_window(version.ver): #버전 검사하는 클래스 
     def __init__(self): #여기에서 
         super(ver_window, self).__init__()
-        version.ver.loading(self)
-        
-        
-        
-            
+        version.ver.loading(self) #로딩중 * ota 완료하면 조건에 따라 다시 편집할 예정!
+        #self.next_btn.clicked.connect(self.next_page) # *버전 업그레이드 완료 or 최신 버전인 경우 자동으로 다음 페이지로 전환  
+        self.next_btn.clicked.connect(self.next_page)
+          
+    def next_page(self): #
+        next= nfc_window()
+        widget.addWidget(next)
+        widget.setCurrentIndex(widget.currentIndex()+1) # 재부팅 / 초기 무선랜 이미 연결 > index 1번
+                
+class nfc_window(nfc): #nfc통신 하는 클래스 
+    def __init__(self):
+        super(nfc_window, self).__init__()
+        self.group_serch() #그룹코드 검색
+                   
 if __name__ == "__main__":
     
     app = QApplication(sys.argv)
@@ -89,6 +99,7 @@ if __name__ == "__main__":
         print('와이파이 연결 되었지롱')
         verwindow= ver_window()
         widget.addWidget(verwindow) # 첫 화면 index 0번    
+    
     else: #연결되지 않았을 경우 > 와이파이 설정하는 것부터 시작됨
         mainwindow = MyWindow()
         widget.addWidget(mainwindow) # 첫 화면 index 0번
