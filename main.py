@@ -53,19 +53,20 @@ class MyWindow(QMainWindow, set_class): #set.ui *첫 화면
             
 class Set_Window(QMainWindow, Qrtest_class):    # camtest.ui *qr내용 출력됨    
     def __init__(self):
-        global wificode
+        global wificode, SSID, PWD
         
         super().__init__()
         self.setupUi(self)
-        self.setWindowTitle("Hoseo Unviersity - IR LAB")       
-        self.qr_label.setText(str(qr_result.result(wificode)))
+        self.setWindowTitle("Hoseo Unviersity - IR LAB")
+        SSID, PWD = qr_result.result(wificode)     
+        self.qr_label.setText(str(SSID + PWD ))
         self.qr_btn_yes.clicked.connect(lambda state, button=self.qr_btn_yes: self.btn_connect(state, button))
         self.qr_btn_no.clicked.connect(lambda state, button=self.qr_btn_no: self.btn_connect(state, button))
     
     def btn_connect(self, state, button):
         if button==self.qr_btn_yes: #확인 이벤트
-            qr_result.test() 
-            #qr_result.CreateWifiConfig(ssid, password)
+             print("실행")
+             qr_result.CreateWifiConfig(SSID, PWD)
         elif button==self.qr_btn_no: #취소 이벤트
             print('no버튼 클릭')
             print(widget.count())
