@@ -1,16 +1,12 @@
 import sys
 import os
-import subprocess #시스템 종료를 위한 'sh' 실행
+import subprocess #시스템 종료를 위한 'sh' 실행, 와이파이 연결 확인
 
 import qrcode_wifi
 import qr_result
 from nfc import nfc
 
-
 from ver_check import version
-
-import pywifi
-from pywifi import *
 
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
@@ -98,22 +94,25 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget= QtWidgets.QStackedWidget()
     
-    #pywifi모듈 사용 시 wifi연결이 안되어 있으면  
+    #wifi연결이 안되어 있으면  
     #widget에 mainwindow객체 추가
     #연결되어 있으면 verwindow객체 추가
     #재부팅 후 와이파이가 연결되어있으면 바로 버전검사 거쳐서 nfc통신 가능하도록!
-    wifi= pywifi.PyWiFi()
-    interface= wifi.interfaces()[0]
     
-    if(interface.status()==const.IFACE_CONNECTED): #연결되었을 경우 > 바로 버전검사로 넘어감
+    arg= ['iw','wlan0','link']
+    fd_popen= subprocess.Popen(arg, stdout=subprocess.PIPE).stdout #와이파이 연결여부 확인
+    data= fd_popen.read().strip()
+    
+    if (str(data).startswith("b'Connected")): # connected으로 시작 > 와이파이 연결됨 | 바로 버전검사로 넘어감   
         print('와이파이 연결 되었지롱')
         verwindow= ver_window()
         widget.addWidget(verwindow) # 첫 화면 index 0번    
-    
-    else: #연결되지 않았을 경우 > 와이파이 설정하는 것부터 시작됨
+       
+    elif (str(data).startswith("b'Not connected")): # Not connected으로 시작 > 와이파이 연결ㄴㄴ | 와이파이 설정하는 것부터 시작됨
+        print('와이파이 연결 안됨')
         mainwindow = MyWindow()
         widget.addWidget(mainwindow) # 첫 화면 index 0번
-        
+    
     widget.setFixedHeight(480)  
     widget.setFixedWidth(800)  
     widget.showFullScreen()

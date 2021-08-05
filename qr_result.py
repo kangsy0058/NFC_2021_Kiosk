@@ -12,9 +12,7 @@ def result(wificode): # 매개변수 ssid, group_code
 
     print("SSID : "+s_index)
     print("PW : "+p_index)
-    
-    # 밑에꺼 왜 써놓거징..???
-    #qr_add="SSID : "+s_index+"\nGroup code:{1}.format(ssid, group_code)"
+
     return s_index, p_index
 
 
