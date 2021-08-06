@@ -34,8 +34,11 @@ def CreateWifiConfig(SSID, password):
         wifi.write(config)
 
     print("Wifi config added")
-    os.system("sudo reboot now") # 재부팅하는 코드
- 
+    #창띄우기
+    reboot_msg= QMessageBox.information(self,'알림', 'Yes를 누르면 재부팅이 시작되어 와이파이에 연결됩니다.', QMessageBox.Yes)
+    if (reboot_msg==QMessageBox.Yes):
+        os.system("sudo reboot now") # 재부팅하는 코드
+  
 #CreateWifiConfig("Ubiquitous_420", "1234567890") #테스트 코드
 
 '''   
