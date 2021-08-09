@@ -109,12 +109,12 @@
       <widget class="QLabel" name="loading_img">
        <property name="minimumSize">
         <size>
-         <width>0</width>
+         <width>419</width>
          <height>150</height>
         </size>
        </property>
        <property name="text">
-        <string>TextLabel</string>
+        <string>아니 나오는거 맞아? </string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
