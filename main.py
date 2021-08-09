@@ -62,7 +62,7 @@ class Set_Window(QMainWindow, Qrtest_class):    # camtest.ui *qr내용 출력됨
     def btn_connect(self, state, button):
         if button==self.qr_btn_yes: #확인 이벤트
              print("실행")
-             qr_result.CreateWifiConfig(SSID, PWD)
+             qr_result.CreateWifiConfig(self, SSID, PWD)
         elif button==self.qr_btn_no: #취소 이벤트
             print('no버튼 클릭')
             print(widget.count())
