@@ -1,6 +1,8 @@
 import sys
 import os
 
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
+
 #qr정보 띄우는 함수
 def result(wificode): # 매개변수 ssid, group_code
     print("qr_result에서 출력"+wificode)
@@ -18,7 +20,7 @@ def result(wificode): # 매개변수 ssid, group_code
 
 #***리눅스에서 돌리면 주석 제거하기***
 # wpa_supplicant.conf파일 수정하는 함수
-def CreateWifiConfig(SSID, password):
+def CreateWifiConfig(self, SSID, password):
     config_lines = [
         '\n',
         'network={',
