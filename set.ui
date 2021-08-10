@@ -70,7 +70,9 @@
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-image: url(:/back/img/WiFi_Btn.png);</string>
+          <string notr="true">background-image: url(:/back/img/WiFi_Btn.png);
+border-radius:20px;
+</string>
          </property>
          <property name="text">
           <string/>
@@ -187,7 +189,8 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-image: url(:/back/img/[IR]NFC_KIOSK_Power_Btn.png);</string>
+      <string notr="true">border-image: url(:/back/img/[IR]NFC_KIOSK_Power_Btn.png);
+border-radius:15px;</string>
      </property>
      <property name="text">
       <string/>
@@ -196,14 +199,16 @@
     <widget class="QPushButton" name="reboot_btn">
      <property name="geometry">
       <rect>
-       <x>670</x>
+       <x>660</x>
        <y>10</y>
        <width>50</width>
        <height>50</height>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-image: url(:/back/img/[IR]NFC_KIOSK_Reboot_Btn.png);</string>
+      <string notr="true">border-image: url(:/back/img/[IR]NFC_KIOSK_Reboot_Btn.png);
+border-radius:5px;
+</string>
      </property>
      <property name="text">
       <string/>
