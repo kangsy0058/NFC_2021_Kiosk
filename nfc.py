@@ -3,6 +3,8 @@ import os
 import sys
 import requests,json #rest api통신하기 위한 파이썬 api모듈
 
+import api_call 
+
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
@@ -24,16 +26,15 @@ class nfc(QMainWindow, persom_img_class):
         self.nfc_img_label.setPixmap(pixmap) # 3 레이블에 이미지 적용
         
     def group_serch(self): # 그룹코드를 검색하는 메소드 
-        
-        url= str("http://210.119.104.206:8080/v1/kiosk/sncheck/123456") # 
+        url= str("http://210.119.104.206:8080/v1/kiosk/sncheck/123456") 
         response = requests.get(url)     
         '''
-            rt: 200
-            response: True, 그룹코드, 상세 위치, 건물명, 위도, 경도
-            --미조회시--
+                rt: 200
+                response: True, 그룹코드, 상세 위치, 건물명, 위도, 경도
+                --미조회시--
 
-            rt: 200
-            response: False
+                rt: 200
+                response: False
         '''
         result= response.text
         result= result[result.find('N')+4:result.find(',')-1]

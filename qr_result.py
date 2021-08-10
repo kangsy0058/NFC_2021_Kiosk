@@ -42,9 +42,3 @@ def CreateWifiConfig(self, SSID, password):
         os.system("sudo reboot now") # 재부팅하는 코드
   
 #CreateWifiConfig("Ubiquitous_420", "1234567890") #테스트 코드
-
-'''   
-#테스트 파일 
-def test():
-    print('test 연결 완료')
-'''

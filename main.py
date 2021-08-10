@@ -117,4 +117,3 @@ if __name__ == "__main__":
     widget.setFixedWidth(800)  
     widget.showFullScreen()
     app.exec_()
-    
