@@ -25,24 +25,27 @@ class nfc(QMainWindow, persom_img_class):
         pixmap.load('img\people.png')
         self.nfc_img_label.setPixmap(pixmap) # 3 레이블에 이미지 적용
         
+        kiosk= api_call.kiosk_sn() # kiosk s/n 출력 
+        self.info_label2.setText("KIOSK S/N: "+kiosk)
+        self.info_label2.setFont(QtGui.QFont("굴림", 10, QtGui.QFont.Black))
+
+
     def group_serch(self): # 그룹코드를 검색하는 메소드 
-        url= str("http://210.119.104.206:8080/v1/kiosk/sncheck/123456") 
+        
+        url= str("http://210.119.104.206:8080/v1/kiosk/sncheck/123456") # 
         response = requests.get(url)     
         '''
-                rt: 200
-                response: True, 그룹코드, 상세 위치, 건물명, 위도, 경도
-                --미조회시--
+            rt: 200
+            response: True, 그룹코드, 상세 위치, 건물명, 위도, 경도
+            --미조회시--
 
-                rt: 200
-                response: False
+            rt: 200
+            response: False
         '''
         result= response.text
         result= result[result.find('N')+4:result.find(',')-1]
         self.info_label.setFont(QtGui.QFont("굴림",24)) 
         self.info_label.setText("NFC 전자 출입 시스템 그룹 코드-"+result)
-       
-       
-        
        
     
     def ver_serch(self): # 버전 검사 메소드
