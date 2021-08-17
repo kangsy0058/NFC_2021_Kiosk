@@ -31,6 +31,6 @@ def group_code():
             response: False
     '''
     result= response.text
-    print(result) # ?결과값이 {{"wearableSN": "123456", "isuser":false}} 여기서 wearableSN가 아니라 group_code 아닌가? isuser의 의미?
+    print(result) # 결과값 {{"wearableSN": "123456", "isuser":false}} DB에 없으면 isuser false값 나옴
     result= result[result.find('N')+4:result.find(',')-1]
     return result
