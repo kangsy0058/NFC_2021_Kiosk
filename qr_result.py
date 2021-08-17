@@ -18,9 +18,8 @@ def result(wificode): # 매개변수 ssid, group_code
     return s_index, p_index
 
 
-#***리눅스에서 돌리면 주석 제거하기***
-# wpa_supplicant.conf파일 수정하는 함수
-def CreateWifiConfig(self, SSID, password):
+# wpa_supplicant.conf파일에 무선랜 정보 입력함수
+def CreateWifiConfig(self, SSID, password): 
     config_lines = [
         '\n',
         'network={',
@@ -36,9 +35,10 @@ def CreateWifiConfig(self, SSID, password):
         wifi.write(config)
 
     print("Wifi config added")
-    #창띄우기
+    
+    # 재부팅 알림창 띄우기
     reboot_msg= QMessageBox.information(self,'알림', 'Yes를 누르면 재부팅이 시작되어 와이파이에 연결됩니다.', QMessageBox.Yes)
     if (reboot_msg==QMessageBox.Yes):
         os.system("sudo reboot now") # 재부팅하는 코드
   
-#CreateWifiConfig("Ubiquitous_420", "1234567890") #테스트 코드
+

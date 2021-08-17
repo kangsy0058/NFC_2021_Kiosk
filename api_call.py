@@ -1,6 +1,8 @@
 import os
 import sys
+
 import subprocess
+import requests,json 
 
 #kiosk S/N 출력 
 def kiosk_sn():
@@ -12,11 +14,15 @@ def kiosk_sn():
     print(data)
     return data
     
-#그룹코드 출력
+# 그룹코드 출력 : 시리얼넘버를 보내고 그룹코드를 받음
 def group_code():
-    url= str("http://210.119.104.206:8080/v1/kiosk/sncheck/123456") # 
+    #시리얼 넘버를 보낼 경우 wsn을 앞에 붙여서 보내야함
+    sn= "wsn"+str(12345) # kiosk_sn() < 실제 시리얼넘버 값 보낼 경우 이걸로 값 변경하기
+    print("http://210.119.104.206:8080/v1/kiosk/sncheck/"+sn)
+    url= str("http://210.119.104.206:8080/v1/kiosk/sncheck/"+sn) 
     response = requests.get(url)     
     '''
+            시리얼 넘버 보내면 그룹 코드 받음
             rt: 200
             response: True, 그룹코드, 상세 위치, 건물명, 위도, 경도
             --미조회시--
@@ -25,5 +31,6 @@ def group_code():
             response: False
     '''
     result= response.text
+    print(result) # ?결과값이 {{"wearableSN": "123456", "isuser":false}} 여기서 wearableSN가 아니라 group_code 아닌가? isuser의 의미?
     result= result[result.find('N')+4:result.find(',')-1]
     return result
