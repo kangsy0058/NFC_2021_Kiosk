@@ -6,18 +6,50 @@ import qrcode_wifi
 import qr_result
 from nfc import nfc
 
+from api_call import kiosk_sn
+
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPixmap
 
 #리소스 파일 사용시 resource_path()사용해서 절대경로로 변경
+sn_class = uic.loadUiType('/home/pi/nfc_2021_kiosk/SN.ui')[0]
 set_class = uic.loadUiType('/home/pi/nfc_2021_kiosk/set.ui')[0]
 Qrtest_class = uic.loadUiType("/home/pi/nfc_2021_kiosk/camtest.ui")[0]
 
 
 wificode ='' # qr 내용 저장할 변수
 
+#시리얼 넘버 출력 클래스
+class sn_window(QMainWindow, sn_class):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        sn_result= api_call.kiosk_sn
+        self.label.setText(sn_result)
+        
+        #이벤트 연결
+        self.pushButton.clicked.connect(self.next)
+        
+    def next(self):
+        #와이파이 연결 여부 확인
+        arg= ['iw','wlan0','link']
+        fd_popen= subprocess.Popen(arg, stdout=subprocess.PIPE).stdout 
+        data= fd_popen.read().strip()
+    
+        if (str(data).startswith("b'Connected")): # connected으로 시작 > 와이파이 연결됨 | 바로 nfc통신부터 시작 
+            print('와이파이 연결 되었지롱')
+            nfcwindow= nfc_window()
+            widget.addWidget(nfcwindow) # 첫 화면 index 1번  
+            widget.setCurrentIndex(1)  
+       
+        elif (str(data).startswith("b'Not connected")): # Not connected으로 시작 > 와이파이 연결ㄴㄴ | 와이파이 설정하는 것부터 시작됨
+            print('와이파이 연결 안됨')
+            mainwindow = MyWindow()
+            widget.addWidget(mainwindow) # 첫 화면 index 1번
+            widget.setCurrentIndex(1)  
+            
 #와이파이 QR 입력 클래스 
 class MyWindow(QMainWindow, set_class): #set.ui *첫 화면     
     def __init__(self):
@@ -25,7 +57,7 @@ class MyWindow(QMainWindow, set_class): #set.ui *첫 화면
         super().__init__()
         #화면 세팅
         self.setupUi(self) 
-        self.setWindowTitle("Hoseo Unviersity - IR LAB") 
+        
         
         #이벤트 연결
         self.qrcode_btn.clicked.connect(self.btn_connect) # QR버튼 클릭 이벤트
@@ -41,7 +73,7 @@ class MyWindow(QMainWindow, set_class): #set.ui *첫 화면
         
         if wificode is not None: # 유효한 값이 들어오면 다음 화면으로 변경 
             setwindow = Set_Window() 
-            a=widget.addWidget(setwindow) #index 1번
+            a=widget.addWidget(setwindow) #index 2번
             print('setwindow 인덱스', a) 
             widget.setCurrentIndex(widget.currentIndex()+1) # setwindow으로 화면 전환
 
@@ -76,8 +108,8 @@ class Set_Window(QMainWindow, Qrtest_class):    # camtest.ui *qr내용 출력됨
             print('no버튼 클릭')
             print(widget.count())
             print(widget.currentIndex())
-            widget.removeWidget(widget.widget(1)) # widget stack에 생성된 index 1 위젯 삭제 
-            widget.setCurrentIndex(0) # 다시 mywindow로 전환 (QR다시 입력)
+            widget.removeWidget(widget.widget(2)) # widget stack에 생성된 index 1 위젯 삭제 
+            widget.setCurrentIndex(1) # 다시 mywindow로 전환 (QR다시 입력)
         
             
 #재부팅되고 > 프로그램이 여기서 부터 실행. > 와이파이 연결(재부팅 결과)     
@@ -102,20 +134,8 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget= QtWidgets.QStackedWidget()
     
-    #와이파이 연결 여부 확인
-    arg= ['iw','wlan0','link']
-    fd_popen= subprocess.Popen(arg, stdout=subprocess.PIPE).stdout 
-    data= fd_popen.read().strip()
-    
-    if (str(data).startswith("b'Connected")): # connected으로 시작 > 와이파이 연결됨 | 바로 nfc통신부터 시작 
-        print('와이파이 연결 되었지롱')
-        nfcwindow= nfc_window()
-        widget.addWidget(nfcwindow) # 첫 화면 index 0번    
-       
-    elif (str(data).startswith("b'Not connected")): # Not connected으로 시작 > 와이파이 연결ㄴㄴ | 와이파이 설정하는 것부터 시작됨
-        print('와이파이 연결 안됨')
-        mainwindow = MyWindow()
-        widget.addWidget(mainwindow) # 첫 화면 index 0번
+    snwindow=sn_window()
+    widget.addWidget(snwindow) #첫 화면 index 0번 
     
     widget.setFixedHeight(480)  
     widget.setFixedWidth(800)  

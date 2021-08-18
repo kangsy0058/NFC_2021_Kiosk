@@ -31,6 +31,7 @@ def group_code():
             response: False
     '''
     result= response.text
-    print(result) # 결과값 {{"wearableSN": "123456", "isuser":false}} DB에 없으면 isuser false값 나옴
+    print(result) # 결과값 {{"wearableSN": "123456", "isuser":false}} DB에 없으면 isuser false값 나오고 있으면 True출력
+                  
     result= result[result.find('N')+4:result.find(',')-1]
     return result
