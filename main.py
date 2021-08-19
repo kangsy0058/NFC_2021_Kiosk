@@ -93,7 +93,8 @@ class Set_Window(QMainWindow, Qrtest_class):    # camtest.ui *qr내용 출력됨
         
         # 와이파이 정보 화면 출력함
         SSID, PWD = qr_result.result(wificode)  # 리턴값: ssid, password 
-        self.qr_label.setText(str(SSID + PWD ))
+        self.qr_label.setText(str(SSID))
+        self.qr_label_2.setText(str(PWD))
         
         # 이벤트 연결
         self.qr_btn_yes.clicked.connect(lambda state, button=self.qr_btn_yes: self.btn_connect(state, button)) # 정보가 일치할 경우 ('확인 버튼 클릭')
