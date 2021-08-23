@@ -23,7 +23,7 @@ print(data)
 group="test"
 print(group)
 
-#기기 등록 저장되는 이름은 시리얼 넘버, 그룹은 일단 test
+#기기 등록                                                                저장되는 이름은 시리얼 넘버, 그룹은 일단 test
 re_device='sudo wget -O - "https://dashboard.upswift.io/install_upswift" | sudo sh -s TyVZiyMwitDVvmXt4sSMyQtxktZdpKezYg NFC -n={0} -g={1}'.format(data, group)
 arg= re_device.split()
 
