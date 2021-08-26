@@ -13,7 +13,6 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPixmap
-
 #리소스 파일 사용시 resource_path()사용해서 절대경로로 변경
 
 set_class = uic.loadUiType('/home/pi/nfc_2021_kiosk/set.ui')[0]
@@ -93,7 +92,7 @@ class sn_window(QMainWindow, sn_class):
             
     # 버튼 이벤트 3       
     def rebootbtn(self):  # 재시작 버튼 메소드   
-        subprocess.call('sudo reboot',shell=True)
+        subprocess.call('sudo reboot now',shell=True)
             
 #와이파이 QR 입력 클래스 
 class MyWindow(QMainWindow, set_class): #set.ui 
@@ -123,9 +122,9 @@ class MyWindow(QMainWindow, set_class): #set.ui
             widget.setCurrentIndex(widget.currentIndex()+1) # setwindow으로 화면 전환
 
     def btn_power(self):
-        subprocess.call('sudo shutdown',shell=True)
+        subprocess.call('sudo shutdown now',shell=True)
     def btn_reboot(self):
-        subprocess.call('sudo reboot',shell=True)
+        subprocess.call('sudo reboot now',shell=True)
         
 # 와이파이 정보 화면 출력 및 재부팅        
 class Set_Window(QMainWindow, Qrtest_class):    # camtest.ui *qr내용 출력됨    
@@ -168,9 +167,9 @@ class nfc_window(nfc): # nfc통신 (그룹 코드 출력)
         self.reboot_btn.clicked.connect(self.reboot)
         
     def power(self):
-        subprocess.call('sudo shutdown',shell=True)
+        subprocess.call('sudo shutdown now',shell=True)
     def reboot(self):
-        subprocess.call('sudo reboot',shell=True)
+        subprocess.call('sudo reboot now',shell=True)
                    
 if __name__ == "__main__":
     

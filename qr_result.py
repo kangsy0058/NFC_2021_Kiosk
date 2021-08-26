@@ -5,16 +5,31 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
 
 #qr정보 띄우는 함수
 def result(wificode): # 매개변수 ssid, group_code
-    print("qr_result에서 출력"+wificode)
-    a = wificode.split(sep=';P:')
+    '''
+    wificode 출력 유형    
+        1. 비밀번호 없을 경우= "WIFI:T:nopass;S:PASCUCCI_5G;P:;H:;"
+        2. 비밀번호가 있을 경우=  "WIFI:T:WPA;S:SSID;P:PWD;H:;"
+    '''
+    a = wificode.split(sep=';P:') 
+    print("a출력 : "+str(a))
+    
     
     _p_index = a[1]
-    s_index = wificode[13:wificode.find(';P')]
-    p_index = _p_index[:-4]
-
+    psd_index = wificode[7:wificode.find(';')]
+    print("psd_index : " + psd_index)
+    s_index = '초기값'
+    p_index = '초기값'
+    
+    if psd_index == "nopass":
+        s_index = wificode[16:wificode.find(';P:')]
+        p_index = ''
+    elif psd_index == "WPA":
+        s_index = wificode[13:wificode.find(';P:')]
+        p_index = _p_index[:-4]
+    
     print("SSID : "+s_index)
     print("PW : "+p_index)
-
+    
     return s_index, p_index
 
 
