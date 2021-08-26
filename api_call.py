@@ -22,7 +22,7 @@ def kiosk_sn():
 # 그룹코드 출력 : 시리얼넘버를 보내고 그룹코드를 받음
 def group_code(self):
     #시리얼 넘버를 보낼 경우 wsn을 앞에 붙여서 보내야함
-    sn= "wsn"+str(111123) # kiosk_sn() < 실제 시리얼넘버 값 보낼 경우 이걸로 값 변경하기
+    sn= "wsn"+str(1111) # kiosk_sn() < 실제 시리얼넘버 값 보낼 경우 이걸로 값 변경하기
     #print("http://210.119.104.206:8080/v1/kiosk/sncheck/"+sn)
     url= str("http://210.119.104.206:8080/v1/kiosk/sncheck/"+sn) 
     response = requests.get(url)     
