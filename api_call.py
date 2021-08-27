@@ -40,13 +40,13 @@ def group_code(self):
     
     if f in result:
         #result= result.replace('false','False') #json은 boolean= false, true 파이썬 문법과 일치시키기 위해 False, True로 변경 
-        print('False가 포함되어 있음') # DB에 일치하는 그룹코드가 없다! 
+        print('False') # DB에 일치하는 그룹코드가 없다! 
         res= json.loads(result) 
         print(res)
         return res   
     
     else:
-        print('true가 있습니다~')
+        print('true')
         res= json.loads(result) # true > True 변경 후 이 명령어를 사용하면 json형식이 아니라서 json객체가 없다고 나옴
         print(res) #{u'res': {u'wearableSN': u'123456', u'isuser': True}}
         return res
