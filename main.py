@@ -165,9 +165,9 @@ class Set_Window(QMainWindow, Qrtest_class):    # camtest.ui *qr내용 출력됨
             widget.removeWidget(widget.widget(2)) # widget stack에 생성된 index2 위젯 삭제 
             widget.setCurrentIndex(1) # 다시 mywindow로 전환 (QR다시 입력)
 
-# 웨어러블 태그 클래스        
+# 웨어러블 태그        
 class Thread(QThread):
-    def __init__(self, parent):
+    def __init__(self, parent): #여기서 self는 Thread, parent에는 nfc의 객체가 들어가
         global pn532
         super().__init__(parent)
         self.parent=parent
@@ -176,17 +176,47 @@ class Thread(QThread):
         print("웨어러블 기기를 태그해주세요")
         while True:
         # Check if a card is available to read
-            uid = pn532.read_passive_target(timeout=1)
+            uid = pn532.read_passive_target(timeout=2)
             print(".", end="")
-                
+            print("반복")
             # Try again if no card is available.
             if uid is None:
+                print("값이 없음")
                 continue
             else: 
-                print("Found card with UID:", [hex(i) for i in uid])
-                subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/ok2.wav',shell=True)
-                break
+                # 값을 검색할 경우 넘길 값 그냥 UID만 넘기면 됨.
+                # 
+                key=[hex(i) for i in uid]
+                i= self.search(key)
+                if i==-1:
+                    print("Found card with UID:", [hex(i) for i in uid])
+                    subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/ok2.wav',shell=True)
+                    continue
+                    
+                
+                elif(i>=0): 
+                    print("이미 태그하셨습니다.")
+                    subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/already.wav',shell=True)
+                    continue
+                    
             
+    def search(self, key):
+        i=0;
+        self.parent.visitor.append(key)
+        
+        while(True):
+            if(self.parent.visitor[i]==key):
+                break
+            i+=1
+            
+        if (i==(len(self.parent.visitor)-1))or(len(self.parent.visitor)==1 and i==0):
+            i=-1
+            return i 
+        else :
+            return i
+   
+
+        
                     
 #재부팅되고 > 프로그램이 여기서 부터 실행. > 와이파이 연결(재부팅 결과)     
 class nfc_window(QMainWindow, nfc_class): # nfc통신 (그룹 코드 출력)
@@ -211,8 +241,9 @@ class nfc_window(QMainWindow, nfc_class): # nfc통신 (그룹 코드 출력)
         self.nfc_img_label.setMovie(self.movie) # 레이블에 동적이미지 전달
         self.movie.start() # 이미지 실행
         
-        #nfc 세팅
+        # nfc 세팅
         pn532= nfc.nfc_set(self)
+        self.visitor= list() # 웨어러블 s/n 저장할 변수
         
         # 태그 스레드 실행
         t=Thread(self)
