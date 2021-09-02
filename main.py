@@ -175,27 +175,29 @@ class Thread(QThread):
     def run(self):
         print("웨어러블 기기를 태그해주세요")
         while True:
-        # Check if a card is available to read
             uid = pn532.read_passive_target(timeout=2)
             print(".", end="")
-            print("반복")
-            # Try again if no card is available.
             if uid is None:
-                print("값이 없음")
                 continue
             else: 
                 # 값을 검색할 경우 넘길 값 그냥 UID만 넘기면 됨.
-                # 
+                 
                 key=[hex(i) for i in uid]
                 i= self.search(key)
                 if i==-1:
                     print("Found card with UID:", [hex(i) for i in uid])
+                    self.parent.ok_label.setText("태그되었습니다.\n"+"".join(key))#"".join(key)
+                    self.parent.ok_label.setFont(QtGui.QFont("굴림", 20, QtGui.QFont.Black))
+                    
                     subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/ok2.wav',shell=True)
                     continue
                     
                 
                 elif(i>=0): 
                     print("이미 태그하셨습니다.")
+                    self.parent.ok_label.setText("이미 태그하셨습니다.\n"+"".join(key))
+                    self.parent.ok_label.setFont(QtGui.QFont("굴림", 20, QtGui.QFont.Black))
+                    
                     subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/already.wav',shell=True)
                     continue
                     
@@ -214,9 +216,9 @@ class Thread(QThread):
             return i 
         else :
             return i
-   
-
-        
+        # -1이면? 보초값을 넘겨준것. 없다! 정상입니다.  i를 넘겨주면 이미 태그하셨습니다. 
+        # 맨 처음 태그한 사람이 다시 태그한 경우 못잡아냄 무조건 저장함.
+        # 길이가 1이고 i=1인경우? (len(self.parent.visitor)==1 and i==0)       
                     
 #재부팅되고 > 프로그램이 여기서 부터 실행. > 와이파이 연결(재부팅 결과)     
 class nfc_window(QMainWindow, nfc_class): # nfc통신 (그룹 코드 출력)
@@ -267,5 +269,3 @@ if __name__ == "__main__":
     widget.setFixedWidth(800)  
     widget.showFullScreen()
     app.exec_()
-    
-    # https://ybworld.tistory.com/39?category=929856
