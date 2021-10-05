@@ -1,6 +1,9 @@
 import sys
 import os
 import subprocess #시스템 종료를 위한 'sh' 실행, 와이파이 연결 확인
+import time
+
+
 
 import qrcode_wifi
 import qr_result
@@ -15,6 +18,7 @@ from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtGui
+from PyQt5 import QtCore
 from PyQt5.QtCore import *
 
 #리소스 파일 사용시 resource_path()사용해서 절대경로로 변경
@@ -26,58 +30,102 @@ nfc_class = uic.loadUiType('/home/pi/nfc_2021_kiosk/nfc.ui')[0]
 
 wificode ='' # qr 내용 저장할 변수
 pn532 =''
-#시리얼 넘버 출력 클래스
-class sn_window(QMainWindow, sn_class):
-    def __init__(self):
-        super().__init__()
-        self.setupUi(self)
+group='' # 그룹 코드 저장
+
+class sn_window_thread(QThread): 
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent= parent
+        self.timer= QTimer(self)
         
-                
+    def run(self):
+        global group     
+        
         #와이파이 연결 확인
         arg= ['iw','wlan0','link']
         fd_popen= subprocess.Popen(arg, stdout=subprocess.PIPE).stdout 
-        data= fd_popen.read().strip()
-        wifi = False 
+        data= fd_popen.read().strip() 
         
         if (str(data).startswith("b'Connected")): # connected으로 시작 > 와이파이 연결됨 | 바로 nfc통신부터 시작 
             print('와이파이 연결')
-            wifi = True
-            api_result_dic= api_call.group_code(self) # 등록된 사용자인지 그룹코드 검색. 리턴값: 딕셔너리 형태
+            self.parent.wifi = True
+            print("wifi에 True대입", self.parent.wifi)
             
-            if api_result_dic['res']['isuser']:  # 등록된 사용자              
-                #시리얼 넘버 및 상세 정보 출력
-                self.sn_label.setText('KIOSK S/N:'+ str(api_result_dic['res']['wearableSN'])) 
-                 
-                self.isuser_label.setText('사용자 등록: '+str(api_result_dic['res']['isuser']))
+            #self.timer.singleShot(2000, self.loading_sg.emit(True))
+            #self.loading_sg.emit(True)
+            api_result_dic= api_call.group_code(self) # 그룹 등록 여부, 그룹코드 검색. 리턴값: 딕셔너리 형태 (원래 그룹코드, 상세 위치, 건물명, 위도, 경도, 그룹 등록 여부) 
+            print("딜레이 완료")
+            #호출 완료된 시점에서 로딩이미지 종료되도록 false값을 방출
+            #self.loading_sg.emit(False)
+            
+            if api_result_dic['res']['isuser']:  # 등록된 사용자
+                              
+                # kiosk s/n, 그룹 코드 UI출력 
+                group= str(api_result_dic['res']['wearableSN'])
+                self.parent.sn_label.setText('KIOSK S/N:'+ api_call.kiosk_sn()+"\nGROUP CODE:"+group) 
+                self.parent.isuser_label.setText('사용자 등록: '+str(api_result_dic['res']['isuser']))
                 
                 
             else: # 등록되지 않은 사용자
-                # 시리얼 넘버와 안내문구 출력
-                self.sn_label.setText('KIOSK S/N:'+ str(api_result_dic['res']['wearableSN']))
-                #self.sn_label.setText('KIOSK S/N:'+ api_call.kiosk_sn())
-                self.isuser_label.setText('**등록된 사용자가 아닙니다. 웹에서 등록해주세요! **')
-                self.pushButton.setEnabled(False) #다음 버튼 비활성화
+              
+                # kiosk s/n, 그룹 코드 UI와 안내문구 출력 
+                self.parent.movie.stop()
+                self.parent.sn_label.setText('KIOSK S/N:'+ api_call.kiosk_sn())  
+                self.parent.isuser_label.setText('**등록된 사용자가 아닙니다. 웹에서 등록해주세요! **')
+                
+                self.parent.pushButton.setEnabled(False) #다음 버튼 비활성화
                 
             
         elif (str(data).startswith("b'Not connected")): # Not connected으로 시작 > 와이파이 연결ㄴㄴ | 와이파이 설정하는 것부터 시작됨
             print('와이파이 연결 안됨')
-            self.sn_label.setText( 'KIOSK S/N: '+  api_call.kiosk_sn() )
-            self.isuser_label.setText('와이파이를 연결하세요')
-            self.research.setEnabled(False) # 다시 검색 버튼 비활성화
+            self.parent.wifi= False
+            
+            self.parent.sn_label.setText( 'KIOSK S/N: '+  api_call.kiosk_sn() )
+            self.parent.isuser_label.setText('와이파이를 연결하세요')
+            self.parent.research.setEnabled(False) # 다시 검색 버튼 비활성화
+            
+        print("스레드 종료")
+        
+        
+        
+#시리얼 넘버 출력 클래스
+class sn_window(QMainWindow, sn_class):
+    def __init__(self):
+        global group
+        super().__init__()
+        self.setupUi(self)
+        
+        self.wifi=False
+        
+        # 버튼 이벤트 연결 
+        self.pushButton.clicked.connect(self.btn_connect) # 다음버튼 (NFC통신 화면 전환)
+        #self.pushButton.clicked.connect(lambda state, button= self.wifi: self.btn_connect(state, button))   >> 이미 인자를 전달했기 때문에 계속 false로 결과값이 나옴
+        self.research.clicked.connect(self.research_btn) # 다시 검색
+        self.reboot_2.clicked.connect(self.rebootbtn) # 재부팅
+
+        # api 스레드  
+        self.t1=sn_window_thread(self)
+        self.t1.start()
+        #self.t1.loading_sg.connect(self.loading)
+        
+        # 로딩이미지 구현 
+        self.loading()
+        
+        
+    def loading(self):
+        self.movie= QMovie('/home/pi/nfc_2021_kiosk/img/loading.gif',QByteArray(), self) # QMovie객체 생성
+                                                                                            # 1번째 인자 파일로 이미지 데이터를 읽음 , QByteArray 바이트 배열을 디코딩하는데 사용.
+        self.movie.setCacheMode(QMovie.CacheAll) # 캐시 모드 지원   
+        self.sn_label.setMovie(self.movie) # 레이블에 동적이미지 전달
+        self.movie.start() # 이미지 실행
+        self.isuser_label.setText('')
             
         
-        # 버튼 이벤트 연결 (기능: 화면 전환)
-        self.pushButton.clicked.connect(lambda state, button= wifi: self.btn_connect(state, button))       
-            # 종료, 재부팅
-        self.research.clicked.connect(self.research_btn)
-        self.reboot_2.clicked.connect(self.rebootbtn)
-    
-    # 버튼 이벤트 1    
-    def btn_connect(self, state, button): # 화면 전환 메소드   
-         
+    # 버튼 이벤트: 다음버튼    btn_connect(self, state, button)
+    def btn_connect(self): # 화면 전환 메소드   
+        print()
         #와이파이 연결O > nfc통신 페이지  
-        if button== True: 
-              
+        if self.wifi== True: 
             nfcwindow= nfc_window()
             widget.addWidget(nfcwindow) # 첫 화면 index 1번  
             widget.setCurrentIndex(1)  
@@ -88,20 +136,24 @@ class sn_window(QMainWindow, sn_class):
             widget.addWidget(mainwindow) # 첫 화면 index 1번
             widget.setCurrentIndex(1)  
             
-    # 버튼 이벤트 2     
-    def research_btn(self): # 그룹 코드 다시 검색 메소드   
-        print('다시 검색')    
-        api_result_dic= api_call.group_code(self)
-        if (api_result_dic['res']['isuser'] ): # 등록된 사용자
-            self.sn_label.setText('KIOSK S/N:'+ str(api_result_dic['res']['wearableSN'])) 
-            self.isuser_label.setText('사용자 등록: '+str(api_result_dic['res']['isuser']))
-        else: # 등록되지 않은 사용자 
-            self.sn_label.setText('KIOSK S/N:'+ str(api_result_dic['res']['wearableSN']))
-            self.isuser_label.setText('** 등록된 사용자가 아닙니다. 웹에서 등록해주세요! **')
             
-    # 버튼 이벤트 3       
+    # 버튼 이벤트: 다시 검색     
+    def research_btn(self): # 그룹 코드 다시 검색 메소드   
+        print('다시 검색 버튼 클릭')  
+          
+        self.sn_label.setText('')
+        self.isuser_label.setText('')
+        
+        self.sn_label.setMovie(self.movie) # 레이블에 동적이미지 전달
+        self.movie.start() # 이미지 실행
+        
+        self.t1.start()
+    
+    # 버튼 이벤트: 재부팅       
     def rebootbtn(self):  # 재시작 버튼 메소드   
         subprocess.call('sudo reboot now',shell=True)
+        
+    
             
 #와이파이 QR 입력 클래스 
 class MyWindow(QMainWindow, set_class): #set.ui 
@@ -167,16 +219,30 @@ class Set_Window(QMainWindow, Qrtest_class):    # camtest.ui *qr내용 출력됨
 
 # 웨어러블 태그        
 class Thread(QThread):
+    
+    state_sg= pyqtSignal(int) # 신호 방출> 0==대기 1==pass 2==warning
+    
     def __init__(self, parent): #여기서 self는 Thread, parent에는 nfc의 객체가 들어가
         global pn532
         super().__init__(parent)
         self.parent=parent
-         
+        
+    
+        
     def run(self):
-        print("웨어러블 기기를 태그해주세요")
+    
         while True:
             uid = pn532.read_passive_target(timeout=2)
             print(".", end="")
+            
+            
+            
+            self.state_sg.emit(0) # 대기 (0)
+            self.parent.user_info_label.setText("") 
+            self.parent.state_label.setText("인식 대기중...")
+            self.parent.state_label.setFont(QtGui.QFont("굴림", 34, QtGui.QFont.Black))
+            
+
             if uid is None:
                 continue
             else: 
@@ -185,77 +251,120 @@ class Thread(QThread):
                 key=[hex(i) for i in uid]
                 i= self.search(key)
                 if i==-1:
+                    #신호 방출> 0==대기 1==pass 2==warning
+                    self.state_sg.emit(1)
+                    
                     print("Found card with UID:", [hex(i) for i in uid])
-                    self.parent.ok_label.setText("태그되었습니다.\n"+"".join(key))#"".join(key)
-                    self.parent.ok_label.setFont(QtGui.QFont("굴림", 20, QtGui.QFont.Black))
+                    self.parent.state_label.setText("태그되었습니다.\n"+"".join(key))#"".join(key)
+                    self.parent.state_label.setFont(QtGui.QFont("굴림", 20, QtGui.QFont.Black))
+                    
+                    #체온, 배터리 용량
+                    c=36.5
+                    battery= 80
+                    self.parent.user_info_label.setText("체온: "+str(c)+"\n\n배터리 용량: "+str(battery)+"%")
                     
                     subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/ok2.wav',shell=True)
+                    time.sleep(1)
+                    #self.parent.nfc_img_label.setHidden(True) 
+                    #self.parent.nfc_img_label.setAlignment(QtCore.Qt.AlignRight)
                     continue
                     
                 
                 elif(i>=0): 
+                    self.state_sg.emit(2)
+                    
                     print("이미 태그하셨습니다.")
-                    self.parent.ok_label.setText("이미 태그하셨습니다.\n"+"".join(key))
-                    self.parent.ok_label.setFont(QtGui.QFont("굴림", 20, QtGui.QFont.Black))
+                    self.parent.state_label.setText("이미 태그하셨습니다.\n"+"".join(key))
+                    self.parent.state_label.setFont(QtGui.QFont("굴림", 20, QtGui.QFont.Black))
+                    
+                    
+                    #체온, 배터리 용량
+                    c=36.5
+                    battery= 80
+                    self.parent.user_info_label.setText("체온: "+str(c)+"\n배터리 용량: "+str(battery)+"%")
                     
                     subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/already.wav',shell=True)
+                    time.sleep(1)
+                    #self.parent.nfc_img_label.setHidden(True) 
+                    #self.parent.nfc_img_label.setAlignment(QtCore.Qt.AlignRight)
                     continue
                     
             
     def search(self, key):
         i=0;
+        # visitor배열 중복 제거해야함 수정해야함 코드 이상해
         self.parent.visitor.append(key)
         
         while(True):
             if(self.parent.visitor[i]==key):
                 break
             i+=1
-            
-        if (i==(len(self.parent.visitor)-1))or(len(self.parent.visitor)==1 and i==0):
+        
+        if (i==(len(self.parent.visitor)-1))or(len(self.parent.visitor)==1 and i==0): # 처음 태그하는 경우
             i=-1
             return i 
-        else :
+        else : # 전에 태그 전적이 있는 경우
             return i
-        # -1이면? 보초값을 넘겨준것. 없다! 정상입니다.  i를 넘겨주면 이미 태그하셨습니다. 
-        # 맨 처음 태그한 사람이 다시 태그한 경우 못잡아냄 무조건 저장함.
-        # 길이가 1이고 i=1인경우? (len(self.parent.visitor)==1 and i==0)       
-                    
+        
 #재부팅되고 > 프로그램이 여기서 부터 실행. > 와이파이 연결(재부팅 결과)     
 class nfc_window(QMainWindow, nfc_class): # nfc통신 (그룹 코드 출력)
     def __init__(self):
-        global pn532
+        global pn532, group
         super().__init__()
         self.setupUi(self)
         
         # 버튼 이벤트 연결
         self.power_btn.clicked.connect(self.power)
         self.reboot_btn.clicked.connect(self.reboot)
-            
-        #그룹코드 호출
-        api_result_dic= api_call.group_code(self) 
-        self.info_label.setFont(QtGui.QFont("굴림",10)) 
-        self.info_label.setText(api_result_dic['res']['wearableSN'])
         
-        # 동적 이미지 
+
+        #그룹코드 호출
+        #api_result_dic= api_call.group_code(self) 
+        self.info_label.setFont(QtGui.QFont("굴림",10)) 
+        self.info_label.setText(group)
+        
+        #동적 이미지 객체 
         self.movie= QMovie('/home/pi/nfc_2021_kiosk/img/nfc-mood.gif',QByteArray(), self) # QMovie객체 생성
                                                                                           # 1번째 인자 파일로 이미지 데이터를 읽음 , QByteArray 바이트 배열을 디코딩하는데 사용.
         self.movie.setCacheMode(QMovie.CacheAll) # 캐시 모드 지원   
         self.nfc_img_label.setMovie(self.movie) # 레이블에 동적이미지 전달
         self.movie.start() # 이미지 실행
+       
+        #태그 상태 이미지 객체  
+        self.pass_img = QPixmap('/home/pi/nfc_2021_kiosk/img/pass.png') 
+        self.warning_img = QPixmap('/home/pi/nfc_2021_kiosk/img/warning.png')
         
         # nfc 세팅
         pn532= nfc.nfc_set(self)
         self.visitor= list() # 웨어러블 s/n 저장할 변수
         
-        # 태그 스레드 실행
+        # 태그 스레드 실행 
         t=Thread(self)
+        t.state_sg.connect(self.img_load)
         t.start()
+        
+        
+    def img_load(self,state):
+        if state==0:
+           
+            self.nfc_img_label.setMovie(self.movie) # 레이블에 동적이미지 전달
+            self.movie.start() # 이미지 실행
+            
+        elif state==1:
+            self.movie.stop()
+            
+            self.nfc_img_label.setPixmap(self.pass_img)
+            
+        elif state==2:
+            self.movie.stop()
+            
+            self.nfc_img_label.setPixmap(self.warning_img)
                 
     def power(self):
         subprocess.call('sudo shutdown now',shell=True)
     def reboot(self):
         subprocess.call('sudo reboot now',shell=True)
- 
+ #스레드 한 이유 : 태그 대기상태를 반복문으로 구현하는데 도중에 버튼 클릭 이벤트 같은 gui기능도 같이 작동해야해서
                         
 if __name__ == "__main__":
     
@@ -269,3 +378,5 @@ if __name__ == "__main__":
     widget.setFixedWidth(800)  
     widget.showFullScreen()
     app.exec_()
+    
+    # https://ybworld.tistory.com/39?category=929856
