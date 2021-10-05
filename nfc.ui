@@ -145,7 +145,7 @@
      <rect>
       <x>92</x>
       <y>80</y>
-      <width>671</width>
+      <width>678</width>
       <height>362</height>
      </rect>
     </property>
@@ -183,16 +183,29 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <widget class="QLabel" name="nfc_img_label">
          <property name="minimumSize">
           <size>
-           <width>360</width>
+           <width>155</width>
            <height>180</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>360</width>
+           <width>155</width>
            <height>180</height>
           </size>
          </property>
@@ -202,8 +215,14 @@
            <height>180</height>
           </size>
          </property>
+         <property name="cursor">
+          <cursorShape>CrossCursor</cursorShape>
+         </property>
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
          </property>
          <property name="styleSheet">
           <string notr="true">image: url(:/back/img/nfc-mood.gif);</string>
@@ -211,8 +230,11 @@
          <property name="text">
           <string/>
          </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
          <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
