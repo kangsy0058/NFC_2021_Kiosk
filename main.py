@@ -21,7 +21,13 @@ from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5.QtCore import *
 
+from gpiozero import LED
+
+led_G = LED(23)
+led_R = LED(24)
+led_Y = LED(17)
 #리소스 파일 사용시 resource_path()사용해서 절대경로로 변경
+
 
 set_class = uic.loadUiType('/home/pi/nfc_2021_kiosk/set.ui')[0]
 Qrtest_class = uic.loadUiType("/home/pi/nfc_2021_kiosk/camtest.ui")[0]
@@ -258,15 +264,34 @@ class Thread(QThread):
                     self.parent.state_label.setText("태그되었습니다.\n"+"".join(key))#"".join(key)
                     self.parent.state_label.setFont(QtGui.QFont("굴림", 20, QtGui.QFont.Black))
                     
+                  
+
                     #체온, 배터리 용량
-                    c=36.5
                     battery= 80
-                    self.parent.user_info_label.setText("체온: "+str(c)+"\n\n배터리 용량: "+str(battery)+"%")
-                    
-                    subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/ok2.wav',shell=True)
+                    f_data= pn532.ntag2xx_read_block(6)
+                    f_data2= pn532.ntag2xx_read_block(7)
+                    print(f_data + f_data2)
+                    f_data= float(f_data.decode('ASCII').replace('n',''))
+
+
+                    self.parent.user_info_label.setText("체온: "+str(f_data)+"℃\n배터리 용량: "+str(battery)+"%")
+                    self.parent.user_info_label.setFont(QtGui.QFont("굴림", 13, QtGui.QFont.Black))
+
+                    if f_data >= 37.5:
+                        led_R.on()
+                    elif f_data < 37.5:
+                        print("여기")
+                        led_G.on()            
+                        subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/ok2.wav',shell=True) # 사운드 변경해
                     time.sleep(1)
-                    #self.parent.nfc_img_label.setHidden(True) 
-                    #self.parent.nfc_img_label.setAlignment(QtCore.Qt.AlignRight)
+
+                    if f_data >= 37.5: 
+                        
+                        led_R.off()
+
+                    elif f_data <37.5:
+                        led_G.off()
+
                     continue
                     
                 
@@ -279,15 +304,32 @@ class Thread(QThread):
                     
                     
                     #체온, 배터리 용량
-                    c=36.5
                     battery= 80
-                    self.parent.user_info_label.setText("체온: "+str(c)+"\n배터리 용량: "+str(battery)+"%")
+                    f_data= pn532.ntag2xx_read_block(6)
+                    f_data2= pn532.ntag2xx_read_block(7)
+                    print(f_data + f_data2)
+                    f_data= float(f_data.decode('ASCII').replace('n',''))
+
+
+                    self.parent.user_info_label.setText("체온: "+str(f_data)+"\n배터리 용량: "+str(battery)+"%")
+                    self.parent.user_info_label.setFont(QtGui.QFont("굴림", 13, QtGui.QFont.Black))
                     
-                    subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/already.wav',shell=True)
+                    if f_data >= 37.5:
+                        led_R.on()
+                        self.parant.state_label.setText("체온이 "+str(f_data)+"입니다. 출입을 금지합니다.")
+            
+                    elif f_data < 37.5:
+                        led_Y.on() 
+                        
+                        subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/already.wav',shell=True)                         
                     time.sleep(1)
-                    #self.parent.nfc_img_label.setHidden(True) 
-                    #self.parent.nfc_img_label.setAlignment(QtCore.Qt.AlignRight)
+
+                    if f_data >= 37.5:
+                        led_R.off()
+                    else:
+                        led_Y.off()
                     continue
+                   
                     
             
     def search(self, key):
@@ -379,4 +421,4 @@ if __name__ == "__main__":
     widget.showFullScreen()
     app.exec_()
     
-    # https://ybworld.tistory.com/39?category=929856
+    # https://ybworld.tistory.com/39?category=9298563
