@@ -109,7 +109,7 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>50</height>
+         <height>120</height>
         </size>
        </property>
        <property name="maximumSize">
@@ -170,12 +170,12 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>464</x>
       <y>382</y>
-      <width>314</width>
+      <width>316</width>
       <height>102</height>
      </rect>
     </property>

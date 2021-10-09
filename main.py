@@ -105,14 +105,13 @@ class sn_window(QMainWindow, sn_class):
         
         # 버튼 이벤트 연결 
         self.pushButton.clicked.connect(self.btn_connect) # 다음버튼 (NFC통신 화면 전환)
-        #self.pushButton.clicked.connect(lambda state, button= self.wifi: self.btn_connect(state, button))   >> 이미 인자를 전달했기 때문에 계속 false로 결과값이 나옴
         self.research.clicked.connect(self.research_btn) # 다시 검색
         self.reboot_2.clicked.connect(self.rebootbtn) # 재부팅
 
         # api 스레드  
         self.t1=sn_window_thread(self)
         self.t1.start()
-        #self.t1.loading_sg.connect(self.loading)
+        
         
         # 로딩이미지 구현 
         self.loading()
@@ -267,18 +266,23 @@ class Thread(QThread):
                   
 
                     #체온, 배터리 용량
+
                     battery= 80
+                    
                     f_data= pn532.ntag2xx_read_block(6)
                     f_data2= pn532.ntag2xx_read_block(7)
                     print(f_data + f_data2)
                     f_data= float(f_data.decode('ASCII').replace('n',''))
-
+                    
+                    #f_data= 37.8 동영상 촬영용
+                    
 
                     self.parent.user_info_label.setText("체온: "+str(f_data)+"℃\n배터리 용량: "+str(battery)+"%")
                     self.parent.user_info_label.setFont(QtGui.QFont("굴림", 13, QtGui.QFont.Black))
 
                     if f_data >= 37.5:
                         led_R.on()
+                        subprocess.call('aplay /home/pi/nfc_2021_kiosk/mp3/warning.wav',shell=True) 
                     elif f_data < 37.5:
                         print("여기")
                         led_G.on()            
@@ -313,7 +317,7 @@ class Thread(QThread):
 
                     self.parent.user_info_label.setText("체온: "+str(f_data)+"\n배터리 용량: "+str(battery)+"%")
                     self.parent.user_info_label.setFont(QtGui.QFont("굴림", 13, QtGui.QFont.Black))
-                    
+
                     if f_data >= 37.5:
                         led_R.on()
                         self.parant.state_label.setText("체온이 "+str(f_data)+"입니다. 출입을 금지합니다.")
@@ -404,6 +408,7 @@ class nfc_window(QMainWindow, nfc_class): # nfc통신 (그룹 코드 출력)
                 
     def power(self):
         subprocess.call('sudo shutdown now',shell=True)
+        
     def reboot(self):
         subprocess.call('sudo reboot now',shell=True)
  #스레드 한 이유 : 태그 대기상태를 반복문으로 구현하는데 도중에 버튼 클릭 이벤트 같은 gui기능도 같이 작동해야해서
