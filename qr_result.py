@@ -35,14 +35,24 @@ def result(wificode): # 매개변수 ssid, group_code
 
 # wpa_supplicant.conf파일에 무선랜 정보 입력함수
 def CreateWifiConfig(self, SSID, password): 
-    config_lines = [
-        '\n',
-        'network={',
-        '\tssid="{}"'.format(SSID),
-        '\tpsk="{}"'.format(password),
-        '\tkey_mgmt=WPA-PSK',
-        '}'
-    ]
+    if password is '':
+        config_lines = [
+            '\n',
+            'network={',
+            '\tssid="{}"'.format(SSID),
+            '\tkey_mgmt=NONE',
+            '}'
+        ]
+    else :
+        config_lines = [
+            '\n',
+            'network={',
+            '\tssid="{}"'.format(SSID),
+            '\tpsk="{}"'.format(password),
+            '\tkey_mgmt=WPA-PSK',
+            '}'
+        ]
+
     config = '\n'.join(config_lines)
     print(config)
 
